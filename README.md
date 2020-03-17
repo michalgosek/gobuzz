@@ -6,7 +6,7 @@
 <p align="justify">
 <b>GoBuzz</b> is an example of an HTTP server providing REST API functionality using in-memory storage. Project has been inspired by Kat Zien speech about 
 hex-domain architecture proposed by <a href="https://github.com/katzien/go-structure-examples">@katezien</a>. Application is currently
-in build process. Used: HTTP light-weight router <a href="https://github.com/go-chi/chi">@chi</a>, BDD framework: <a href="https://onsi.github.io/ginkgo/">@Ginkgo</a>.
+in build process. Used: HTTP light-weight router <a href="https://github.com/go-chi/chi">@chi</a>, BDD framework: <a href="https://onsi.github.io/ginkgo/">@Ginkgo</a> together with matcher/assertion library <a href="https://onsi.github.io/gomega/">@Gomega</a>.
 </p>
 
 <b>Assumptions:</b>
