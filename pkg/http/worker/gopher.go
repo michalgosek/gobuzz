@@ -3,7 +3,6 @@ package worker
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -149,7 +148,6 @@ func GopherRun(goph *Gopher, respsr responding.Service) GopherValidationStatus {
 	dataStream := make(chan GopherValidationStatus)
 	var dataRecived GopherValidationStatus
 
-loop:
 	for {
 		select {
 		case <-time.After(interval):
@@ -157,17 +155,12 @@ loop:
 		case res := <-dataStream:
 			if res.Status != http.StatusAccepted {
 				dataRecived = GopherValidationStatus{Status: res.Status, Msg: res.Msg}
-				break loop
+				return dataRecived
 			}
 		case <-time.After(halt):
 			log.Printf("Worker[id:%d]: Timeout because of 20 min halt.", goph.ID)
 			dataRecived = GopherValidationStatus{Status: http.StatusRequestTimeout, Msg: http.StatusText(http.StatusRequestTimeout)}
-			break loop
+			return dataRecived
 		}
 	}
-
-	fmt.Println("\nChannel data: ")
-	fmt.Println(dataRecived.Status)
-	fmt.Println(dataRecived.Msg)
-	return dataRecived
 }
