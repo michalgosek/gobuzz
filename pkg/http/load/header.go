@@ -108,7 +108,7 @@ func (p *PayloadValidationError) Error() string {
 func PostPayloadCheck(w http.ResponseWriter, r *http.Request, content *JSONPostBody) PayloadValidationError {
 	if r.Header.Get("Content-Type") != "" {
 		if val, _ := header.ParseValueAndParams(r.Header, "Content-Type"); val != "application/json" {
-			return PayloadValidationError{Status: http.StatusUnsupportedMediaType, Msg: "Invalid or lack of Content-Type"}
+			return PayloadValidationError{Status: http.StatusUnsupportedMediaType, Msg: fmt.Sprintln("Invalid or lack of Content-Type.")}
 		}
 	}
 
