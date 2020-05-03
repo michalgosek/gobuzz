@@ -29,13 +29,14 @@ type GopherValidationStatus struct {
 // fetchURL gorotuine for Gopher internal usage. Fetch the conent from URL
 // mesure elapsed time from start till end of the request and pass these data to
 // repository of responding service.
-func fetchURL(ctxParent context.Context, goph *Gopher, respsr responding.Service, dataStream chan<- GopherValidationStatus) {
+func fetchURL(goph *Gopher, respsr responding.Service, dataStream chan<- GopherValidationStatus) {
 
 	log.Println()
 	log.Printf("fetchURL[worker id:%d] - Start.\n", goph.ID)
 	defer log.Printf("fetchURL[worker id:%d] - Stop.\n", goph.ID)
 	defer close(dataStream)
 
+	ctxParent := context.Background()
 	timeout := 5 * time.Second // GET request cancellation after 5s
 	ctxChild, cancel := context.WithTimeout(ctxParent, timeout)
 	defer cancel()
@@ -142,16 +143,13 @@ func GopherRun(goph *Gopher, respsr responding.Service) GopherValidationStatus {
 
 	interval := time.Duration(goph.Interval) * time.Second
 	halt := 20 * time.Minute
-
-	ctxParent := context.Background()
-
 	dataStream := make(chan GopherValidationStatus)
 	var dataRecived GopherValidationStatus
 
 	for {
 		select {
 		case <-time.After(interval):
-			go fetchURL(ctxParent, goph, respsr, dataStream) // TO-DO: Think about using wg here.
+			go fetchURL(goph, respsr, dataStream) // TO-DO: Think about using wg here.
 		case res := <-dataStream:
 			if res.Status != http.StatusAccepted {
 				dataRecived = GopherValidationStatus{Status: res.Status, Msg: res.Msg}
